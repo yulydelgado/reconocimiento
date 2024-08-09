@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Preguntas</title>
+    <link rel="stylesheet" href="../estilos/styles.css">
+</head>
+<body class= “body-juego”>
+    <header>
+        <h1>Mi Portafolio</h1>
+        <nav>
+            <ul>
+                <li><a href="../vistas/sobre-mi.html">Sobre Mí</a></li>
+                <li><a href="../vistas/proyectos.html">Proyectos</a></li>
+                <li><a href="../vistas/habilidades.html">Habilidades</a></li>
+                <li><a href="../vistas/juego.html">Juego</a></li>
+                <li><a href="../vistas/contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container-juego">
+        <h1 class=”h1-juego”>Juego de Preguntas</h1>
+        <div id="pregunta"></div>
+        <div class="respuestas">
+            <button id="respuesta1" onclick="verificarRespuesta(1)"></button>
+            <button id="respuesta2" onclick="verificarRespuesta(2)"></button>
+            <button id="respuesta3" onclick="verificarRespuesta(3)"></button>
+            <button id="respuesta4" onclick="verificarRespuesta(4)"></button>
+        </div>
+        <div id="resultado"></div>
+        <button id="siguiente" onclick="siguientePregunta()">Siguiente</button>
+    </div>
+    <script src="../js/juego.js"></script>
+</body>
+</html>
+
+
+
+
