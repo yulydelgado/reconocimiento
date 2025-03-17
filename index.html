@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Control de Bombillo con Gestos </title>
+    <title>Control de Bombillo con Gestos</title>
     <style>
         body {
             display: flex;
@@ -11,83 +11,22 @@
             height: 100vh;
             margin: 0;
         }
+        #canvas {
+            border: 2px solid black;
+        }
+        #label-container {
+            margin-top: 20px;
+        }
     </style>
-    <script src="script.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    <script type="text/javascript">
 </head>
 <body>
-    <div>Teachable Machine Image Model - p5.js and ml5.js</div>
+    <div>Teachable Machine Image Model</div>
+    <button type="button" onclick="init()">Start</button>
+    <div id="webcam-container"></div>
+    <div id="label-container"></div>
     <div id="estado-bombillo">Estado: <span>Desconocido</span></div>
-
-    
-    
-    
-        // Classifier Variable
-        let classifier;
-        // Model URL
-        let imageModelURL = './my_model/';
-
-        // Video
-        let video;
-        let flippedVideo;
-        // To store the classification
-        let label = "";
-
-        // Load the model first
-        function preload() {
-            classifier = ml5.imageClassifier(imageModelURL + 'model.json');
-        }
-
-        function setup() {
-            createCanvas(320, 260);
-            // Create the video
-            video = createCapture(VIDEO);
-            video.size(320, 240);
-            video.hide();
-
-            flippedVideo = ml5.flipImage(video);
-            // Start classifying
-            classifyVideo();
-        }
-
-        function draw() {
-            background(0);
-            // Draw the video
-            image(flippedVideo, 0, 0);
-
-            // Draw the label
-            fill(255);
-            textSize(16);
-            textAlign(CENTER);
-            text(label, width / 2, height - 4);
-        }
-
-        // Get a prediction for the current video frame
-        function classifyVideo() {
-            flippedVideo = ml5.flipImage(video)
-            classifier.classify(flippedVideo, gotResult);
-            flippedVideo.remove();
-        }
-
-        // When we get a result
-        function gotResult(error, results) {
-            if (error) {
-                console.error(error);
-                return;
-            }
-            label = results[0].label;
-            const estadoBombillo = document.querySelector("#estado-bombillo span");
-            if (label === "pose1") {
-                estadoBombillo.textContent = "Encendido";
-            } else if (label === "pose2") {
-                estadoBombillo.textContent = "Apagado";
-            } else {
-                estadoBombillo.textContent = "Desconocido";
-            }
-            classifyVideo();
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
