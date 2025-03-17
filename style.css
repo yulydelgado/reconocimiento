@@ -1,9 +1,37 @@
 body {
+    background-color: #ffe4e1;
     font-family: sans-serif;
     text-align: center;
+    display: flex;
+    height: 100vh;
+    margin: 0;
 }
 
-video {
-    width: 200px;
-    height: 200px;
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+canvas {
+    border: 2px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.sidebar {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-left: 1px solid #ccc;
+    height: 100vh; /* Asegura que la barra lateral ocupe toda la altura */
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho/alto total */
+    text-align: left; /* Alinea el texto a la izquierda */
+}
+
+.sidebar h1 {
+    font-size: 2em; /* Tamaño del título */
+    margin-bottom: 10px;
+}
+
+.sidebar p {
+    font-size: 1.1em; /* Tamaño del nombre */
 }
