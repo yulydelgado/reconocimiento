@@ -1,68 +1,69 @@
-const URL = "./model/"; // Ruta a tu modelo de Teachable Machine
-let model, webcam, labelContainer, maxPredictions;
+const URL = "./model/"; // Ruta a tu modelo de Teachable Machine Pose
+let model, webcam, ctx, labelContainer, maxPredictions;
 
 async function init() {
     const modelURL = URL + "model.json";
     const metadataURL = URL + "metadata.json";
 
-    // Cargar el modelo de Teachable Machine
-    model = await tmImage.load(modelURL, metadataURL);
+    // Cargar el modelo de Teachable Machine Pose
+    model = await tmPose.load(modelURL, metadataURL);
     maxPredictions = model.getTotalClasses();
 
     // Configurar la cámara web
-    const flip = true; // Voltea la cámara si es necesario
-    webcam = new tmImage.Webcam(200, 200, flip); // Tamaño de la cámara
-    await webcam.setup(); // Solicitar acceso a la cámara
+    const size = 200;
+    const flip = true;
+    webcam = new tmPose.Webcam(size, size, flip);
+    await webcam.setup();
     await webcam.play();
+    window.requestAnimationFrame(loop);
 
-    // Configurar el canvas para mostrar el video
+    // Configurar el canvas
     const canvas = document.getElementById("webcamCanvas");
-    const ctx = canvas.getContext("2d");
-    canvas.width = webcam.canvas.width; // Ajustar tamaño del canvas
-    canvas.height = webcam.canvas.height;
+    canvas.width = size;
+    canvas.height = size;
+    ctx = canvas.getContext("2d");
 
-    // Configurar el contenedor de etiquetas para mostrar las predicciones
+    // Configurar el contenedor de etiquetas
     labelContainer = document.getElementById("label-container");
     for (let i = 0; i < maxPredictions; i++) {
         labelContainer.appendChild(document.createElement("div"));
     }
+}
 
-    // Bucle para actualizar el video
-    function videoLoop() {
-        webcam.update();
-        ctx.drawImage(webcam.canvas, 0, 0, canvas.width, canvas.height);
-        requestAnimationFrame(videoLoop);
-    }
-    videoLoop(); // Iniciar el bucle de video
-
-    // Bucle para el reconocimiento de gestos
-    async function predictionLoop() {
-        await predict();
-        setTimeout(predictionLoop, 100); // Ajusta la velocidad de predicción (100ms = 10 veces por segundo)
-    }
-    predictionLoop(); // Iniciar el bucle de predicción
+async function loop(timestamp) {
+    webcam.update();
+    await predict();
+    window.requestAnimationFrame(loop);
 }
 
 async function predict() {
-    const prediction = await model.predict(webcam.canvas); // Realizar predicciones con el modelo
+    // Estimar la pose
+    const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
+    // Realizar la predicción
+    const prediction = await model.predict(posenetOutput);
+
     for (let i = 0; i < maxPredictions; i++) {
         const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-        labelContainer.childNodes[i].innerHTML = classPrediction; // Mostrar las predicciones en el contenedor de etiquetas
+        labelContainer.childNodes[i].innerHTML = classPrediction;
+    }
 
-        // Lógica para enviar datos al servidor
-        if (prediction[0].probability > 0.9) {
-            console.log("Mano abierta detectada");
-            sendDataToServer("abierta"); // Enviar "abierta" al servidor
-        }
-        if (prediction[1].probability > 0.9) {
-            console.log("Mano cerrada detectada");
-            sendDataToServer("cerrada"); // Enviar "cerrada" al servidor
+    // Dibujar la pose
+    drawPose(pose);
+}
+
+function drawPose(pose) {
+    if (webcam.canvas) {
+        ctx.drawImage(webcam.canvas, 0, 0);
+        if (pose) {
+            const minPartConfidence = 0.5;
+            tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
+            tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
         }
     }
 }
 
 async function sendDataToServer(gesture) {
-    const serverURL = "tu-url-del-servidor"; // Reemplaza con la URL de tu servidor
+    const serverURL = "tu-url-del-servidor";
     try {
         const response = await fetch(serverURL, {
             method: "POST",
@@ -80,4 +81,4 @@ async function sendDataToServer(gesture) {
     }
 }
 
-init(); // Inicializar la aplicación
+init();
