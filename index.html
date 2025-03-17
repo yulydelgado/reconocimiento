@@ -18,16 +18,15 @@
             margin-top: 20px;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 </head>
 <body>
-    <div>Teachable Machine Pose Model</div>
+    <div>Teachable Machine Image Model</div>
     <button type="button" onclick="init()">Start</button>
-    <div><canvas id="canvas" willReadFrequently="true"></canvas></div>
+    <div id="webcam-container"></div>
     <div id="label-container"></div>
     <div id="estado-bombillo">Estado: <span>Desconocido</span></div>
-
-
     <script src="script.js"></script>
-    
 </body>
 </html>
