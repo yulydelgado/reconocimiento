@@ -52,16 +52,23 @@
   }
 
   // When we get a result
-  function gotResult(error, results) {
-    // If there is an error
+
+function gotResult(error, results) {
     if (error) {
-      console.error(error);
-      return;
+        console.error(error);
+        return;
     }
-    // The results are in an array ordered by confidence.
-    // console.log(results[0]);
     label = results[0].label;
-    // Classifiy again!
+    const estadoBombillo = document.querySelector("#estado-bombillo span");
+    if (label === "pose1") {
+        estadoBombillo.textContent = "Encendido";
+    } else if (label === "pose2") {
+        estadoBombillo.textContent = "Apagado";
+    } else {
+        estadoBombillo.textContent = "Desconocido";
+    }
     classifyVideo();
-  }
+}
+
+
 </script>
