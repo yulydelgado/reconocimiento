@@ -59,6 +59,6 @@ async function predict() {
     } else if (bestPrediction === "Mano cerrada" && bestProbability > 0.8) {
         estadoBombillo.textContent = "Su mano esta cerrada";
     } else {
-        estadoBombillo.textContent = "Obteniendo datos..";
+        estadoBombillo.textContent = "Calculando...";
     }
 }
