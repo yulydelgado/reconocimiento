@@ -14,7 +14,6 @@ async function init() {
     webcam = new tmImage.Webcam(200, 200, flip); // Tamaño de la cámara
     await webcam.setup(); // Solicitar acceso a la cámara
     await webcam.play();
-    window.requestAnimationFrame(loop);
 
     // Configurar el canvas para mostrar el video
     const canvas = document.getElementById("webcamCanvas");
@@ -27,15 +26,21 @@ async function init() {
     for (let i = 0; i < maxPredictions; i++) {
         labelContainer.appendChild(document.createElement("div"));
     }
-}
 
-async function loop() {
-    webcam.update(); // Actualizar el fotograma de la cámara
-    const canvas = document.getElementById("webcamCanvas");
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(webcam.canvas, 0, 0, canvas.width, canvas.height); // Dibujar el fotograma en el canvas
-    await predict(); // Realizar predicciones
-    window.requestAnimationFrame(loop);
+    // Bucle para actualizar el video
+    function videoLoop() {
+        webcam.update();
+        ctx.drawImage(webcam.canvas, 0, 0, canvas.width, canvas.height);
+        requestAnimationFrame(videoLoop);
+    }
+    videoLoop(); // Iniciar el bucle de video
+
+    // Bucle para el reconocimiento de gestos
+    async function predictionLoop() {
+        await predict();
+        setTimeout(predictionLoop, 100); // Ajusta la velocidad de predicción (100ms = 10 veces por segundo)
+    }
+    predictionLoop(); // Iniciar el bucle de predicción
 }
 
 async function predict() {
