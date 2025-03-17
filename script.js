@@ -62,9 +62,9 @@ async function predict() {
         }
     }
     const estadoBombillo = document.querySelector("#estado-bombillo span");
-    if (bestPrediction === "pose1" && bestProbability > 0.8) {
+    if (bestPrediction === "Encender" && bestProbability > 0.8) {
         estadoBombillo.textContent = "Encendido";
-    } else if (bestPrediction === "pose2" && bestProbability > 0.8) {
+    } else if (bestPrediction === "Apagar" && bestProbability > 0.8) {
         estadoBombillo.textContent = "Apagado";
     } else {
         estadoBombillo.textContent = "Desconocido";
