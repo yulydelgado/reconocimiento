@@ -1,35 +1,15 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Portafolio</title>
-    <link rel="stylesheet" href="estilo/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <title>Reconocimiento de Gestos</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body >
-    <header>
-        <h1>Mi Portafolio</h1>
-        <nav>
-            <ul>
-                <li><a href="vistas/sobre-mi.html">Sobre Mí</a></li>
-                <li><a href="vistas/proyectos.html">Proyectos</a></li>
-                <li><a href="vistas/habilidades.html">Habilidades</a></li>
-                <li><a href="vistas/juego.html">Juego</a></li>
-                <li><a href="vistas/contacto.html">Contacto</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main >
-        <h2>Bienvenido a Mi Portafolio</h2>
-
-        <p>Explora mis proyectos y habilidades.</p>
-        <img src="imagenes/inicio.jpg" class="imagen-principal">
-       
-    </main>
-    <footer>
-        <p>&copy; 2024 Mi Portafolio. Todos los derechos reservados.</p>
-    </footer>
+<body>
+    <video id="webcam" autoplay playsinline></video>
+    <div id="label-container"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <script src="script.js"></script>
 </body>
+</html>
 </html>
