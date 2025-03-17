@@ -54,11 +54,11 @@ async function predict() {
         }
     }
     const estadoBombillo = document.querySelector("#estado-bombillo span");
-    if (bestPrediction === "Encender" && bestProbability > 0.8) {
-        estadoBombillo.textContent = "Encendido";
-    } else if (bestPrediction === "Apagar" && bestProbability > 0.8) {
-        estadoBombillo.textContent = "Apagado";
+    if (bestPrediction === "Mano abierta" && bestProbability > 0.8) {
+        estadoBombillo.textContent = "Su mano esta abierta!!";
+    } else if (bestPrediction === "Mano cerrada" && bestProbability > 0.8) {
+        estadoBombillo.textContent = "Su mano esta cerrada";
     } else {
-        estadoBombillo.textContent = "Desconocido";
+        estadoBombillo.textContent = "Obteniendo datos..";
     }
 }
