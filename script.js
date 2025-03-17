@@ -47,13 +47,29 @@
     }
 
     // run the webcam image through the image model
-    async function predict() {
-        // predict can take in an image, video or canvas html element
-        const prediction = await model.predict(webcam.canvas);
-        for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction =
-                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-            labelContainer.childNodes[i].innerHTML = classPrediction;
+
+async function predict() {
+    const prediction = await model.predict(webcam.canvas);
+    let bestPrediction = "";
+    let bestProbability = 0;
+
+    for (let i = 0; i < maxPredictions; i++) {
+        const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+        labelContainer.childNodes[i].innerHTML = classPrediction;
+        if (prediction[i].probability > bestProbability) {
+            bestProbability = prediction[i].probability;
+            bestPrediction = prediction[i].className;
         }
     }
+    const estadoBombillo = document.querySelector("#estado-bombillo span");
+    if (bestPrediction === "pose1" && bestProbability > 0.8) {
+        estadoBombillo.textContent = "Encendido";
+    } else if (bestPrediction === "pose2" && bestProbability > 0.8) {
+        estadoBombillo.textContent = "Apagado";
+    } else {
+        estadoBombillo.textContent = "Desconocido";
+    }
+}
+
+
 </script>
