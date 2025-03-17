@@ -1,14 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Reconocimiento de Gestos</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Webcam Test</title>
 </head>
 <body>
     <canvas id="webcamCanvas"></canvas>
-    <div id="label-container"></div>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    <script src="script.js"></script>
+    <script>
+        const canvas = document.getElementById('webcamCanvas');
+        const ctx = canvas.getContext('2d');
+        const video = document.createElement('video');
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+                video.play();
+                video.addEventListener('loadedmetadata', () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    function draw() {
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        requestAnimationFrame(draw);
+                    }
+                    draw();
+                });
+            })
+            .catch(error => {
+                console.error('Error accessing webcam:', error);
+            });
+    </script>
 </body>
 </html>
