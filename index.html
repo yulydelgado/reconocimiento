@@ -21,6 +21,8 @@
             }
     #canvas {
         border: 2px solid black;
+        border-radius: 10px; /* Redondea los bordes */
+        overflow: hidden; /* Asegura que el contenido dentro del canvas también se redondee */
     }
     #label-container {
         margin-top: 40px;
@@ -31,8 +33,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 </head>
 <body onload="init()">
-    <div><H1>Proyecto Domótica</H1></div>
-    <div><H3>Programa que detecta si su mano esta abierta o cerrada</H3></div>
+    <div><H1>Programa que detecta si su mano esta abierta o cerrada</H1></div>
     <div><H3>Coloque su mano frente a la cámara para detectar la posición</H3></div>
     <div id="webcam-container"></div>
     <div id="label-container"></div>
