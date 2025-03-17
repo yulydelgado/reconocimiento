@@ -1,83 +1,52 @@
-const URL = "./model/"; // Ruta a tu modelo de Teachable Machine Pose
-let model, webcam, ctx, labelContainer, maxPredictions;
+// More API functions here:
+// https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
 
+// the link to your model provided by Teachable Machine export panel
+const URL = "./my_model/";
+
+let model, webcam, labelContainer, maxPredictions;
+
+// Load the image model and setup the webcam
 async function init() {
     const modelURL = URL + "model.json";
     const metadataURL = URL + "metadata.json";
 
-    // Cargar el modelo de Teachable Machine Pose
-    model = await tmPose.load(modelURL, metadataURL);
+    // load the model and metadata
+    // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
+    // or files from your local hard drive
+    // Note: the pose library adds "tmImage" object to your window (window.tmImage)
+    model = await tmImage.load(modelURL, metadataURL);
     maxPredictions = model.getTotalClasses();
 
-    // Configurar la cámara web
-    const size = 200;
-    const flip = true;
-    webcam = new tmPose.Webcam(size, size, flip);
-    await webcam.setup();
+    // Convenience function to setup a webcam
+    const flip = true; // whether to flip the webcam
+    webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+    await webcam.setup(); // request access to the webcam
     await webcam.play();
     window.requestAnimationFrame(loop);
 
-    // Configurar el canvas
-    const canvas = document.getElementById("webcamCanvas");
-    canvas.width = size;
-    canvas.height = size;
-    ctx = canvas.getContext("2d");
-
-    // Configurar el contenedor de etiquetas
+    // append elements to the DOM
+    document.getElementById("webcam-container").appendChild(webcam.canvas);
     labelContainer = document.getElementById("label-container");
-    for (let i = 0; i < maxPredictions; i++) {
+    for (let i = 0; i < maxPredictions; i++) { // and class labels
         labelContainer.appendChild(document.createElement("div"));
     }
 }
 
-async function loop(timestamp) {
-    webcam.update();
+async function loop() {
+    webcam.update(); // update the webcam frame
     await predict();
     window.requestAnimationFrame(loop);
 }
 
+// run the webcam image through the image model
 async function predict() {
-    // Estimar la pose
-    const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
-    // Realizar la predicción
-    const prediction = await model.predict(posenetOutput);
-
+    // predict can take in an image, video or canvas html element
+    const prediction = await model.predict(webcam.canvas);
     for (let i = 0; i < maxPredictions; i++) {
-        const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+        const classPrediction =
+            prediction[i].className + ": " + prediction[i].probability.toFixed(2);
         labelContainer.childNodes[i].innerHTML = classPrediction;
-    }
-
-    // Dibujar la pose
-    drawPose(pose);
-}
-
-function drawPose(pose) {
-    if (webcam.canvas) {
-        ctx.drawImage(webcam.canvas, 0, 0);
-        if (pose) {
-            const minPartConfidence = 0.5;
-            tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
-            tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
-        }
-    }
-}
-
-async function sendDataToServer(gesture) {
-    const serverURL = "tu-url-del-servidor";
-    try {
-        const response = await fetch(serverURL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ gesture: gesture }),
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        console.log("Data sent to server:", gesture);
-    } catch (error) {
-        console.error("Error sending data:", error);
     }
 }
 
