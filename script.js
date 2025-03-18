@@ -1,8 +1,8 @@
-
 // the link to your model provided by Teachable Machine export panel
 const URL = "./my_model/";
 
 let model, webcam, labelContainer, maxPredictions;
+let port; // Variable para almacenar el puerto serial
 
 // Load the image model and setup the webcam
 async function init() {
@@ -29,6 +29,12 @@ async function init() {
     for (let i = 0; i < maxPredictions; i++) { // and class labels
         labelContainer.appendChild(document.createElement("div"));
     }
+
+    // Agregar botón de conexión
+    const connectButton = document.createElement("button");
+    connectButton.textContent = "Conectar Arduino";
+    connectButton.onclick = connectSerial;
+    document.body.appendChild(connectButton);
 }
 
 async function loop() {
@@ -42,6 +48,7 @@ async function predict() {
     const prediction = await model.predict(webcam.canvas);
     let bestPrediction = "";
     let bestProbability = 0;
+    let serialData = ""; // Variable para almacenar los datos seriales
 
     for (let i = 0; i < maxPredictions; i++) {
         const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
@@ -54,9 +61,43 @@ async function predict() {
     const estadoBombillo = document.querySelector("#estado-bombillo span");
     if (bestPrediction === "Encender" && bestProbability > 0.8) {
         estadoBombillo.textContent = "Su mano esta abierta!!";
+        serialData = "1"; // Enviar '1' para encender
     } else if (bestPrediction === "Apagar" && bestProbability > 0.8) {
         estadoBombillo.textContent = "Su mano esta cerrada";
+        serialData = "0"; // Enviar '0' para apagar
     } else {
         estadoBombillo.textContent = "Desconocido";
+        serialData = "2"; // Enviar '2' para desconocido
+    }
+    sendSerialData(serialData); // Envía los datos seriales a Arduino Uno
+}
+
+// Función para conectar al puerto serial
+async function connectSerial() {
+    try {
+        port = await navigator.serial.requestPort();
+        await port.open({ baudRate: 9600 }); // Ajusta la velocidad de baudios según tu configuración
+        console.log("Puerto serial conectado.");
+    } catch (error) {
+        console.error("Error al conectar al puerto serial:", error);
     }
 }
+
+// Función para enviar datos seriales a Arduino Uno
+async function sendSerialData(data) {
+    if (!port) {
+        console.error("Puerto serial no conectado.");
+        return;
+    }
+
+    try {
+        const textEncoder = new TextEncoder();
+        const writer = port.writable.getWriter();
+        await writer.write(textEncoder.encode(data));
+        writer.releaseLock();
+    } catch (error) {
+        console.error("Error al enviar datos seriales:", error);
+    }
+}
+
+init();
